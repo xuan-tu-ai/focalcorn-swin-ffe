@@ -1,0 +1,13 @@
+torch>=2.2
+torchvision
+timm==1.0.27
+optuna>=3.5
+scikit-learn>=1.3
+scipy>=1.10
+numpy
+pandas
+matplotlib
+pillow
+lightgbm>=4.0        # feature selection in the matched re-run of the prior pipeline
+coral-pytorch>=1.4   # reference CORN loss that tests/test_pipeline.py checks against
+thop                 # optional: MAC count in the compute profile; skipped if absent

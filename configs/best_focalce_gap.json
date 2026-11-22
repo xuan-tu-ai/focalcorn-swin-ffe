@@ -1,0 +1,45 @@
+{
+  "config_name": "focalce_gap",
+  "config": {
+    "dual_pool": false,
+    "head": "ce",
+    "loss": "focal_ce"
+  },
+  "best_hp": {
+    "lr": 8.68161688949307e-05,
+    "weight_decay": 0.02195773446539457,
+    "drop_path": 0.035482327760679964,
+    "gamma": 2.7397235746463333,
+    "pct_start": 0.06870538760044254,
+    "batch_size": 32,
+    "aff_degrees": 10,
+    "aff_translate": 0.1161350534151325,
+    "rerase_p": 0.31930523255158394
+  },
+  "best_mean_val_qwk": 0.8715024110141322,
+  "fold_qwks": [
+    0.8573554277984443,
+    0.868534240939522,
+    0.8886175643044302
+  ],
+  "best_epochs": [
+    35,
+    77,
+    80
+  ],
+  "median_best_epoch": 77,
+  "search": {
+    "objective": "mean val QWK over folds 1..3",
+    "sampler": "TPE(multivariate)",
+    "pruner": "Hyperband(20,100,3)",
+    "n_trials": 12,
+    "n_complete": 3,
+    "n_pruned": 9,
+    "split_seed": 42,
+    "stratification": "species x class (24 strata)",
+    "n_folds_total": 5,
+    "folds_used": 3
+  },
+  "elapsed_gpu_hours": 6.09,
+  "timestamp": "2026-09-03 22:25:29"
+}

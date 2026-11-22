@@ -1,0 +1,45 @@
+{
+  "config_name": "corn_gapgmp_std",
+  "config": {
+    "dual_pool": true,
+    "head": "corn",
+    "loss": "corn_std"
+  },
+  "best_hp": {
+    "lr": 0.00011105936949921921,
+    "weight_decay": 0.00011385953381489422,
+    "drop_path": 0.1852906491227631,
+    "gamma": 2.642335029528475,
+    "pct_start": 0.19657217915618438,
+    "batch_size": 32,
+    "aff_degrees": 17,
+    "aff_translate": 0.10464467938908972,
+    "rerase_p": 0.04215783014048888
+  },
+  "best_mean_val_qwk": 0.8909503205678817,
+  "fold_qwks": [
+    0.8969165025765637,
+    0.8741828914785996,
+    0.9017515676484816
+  ],
+  "best_epochs": [
+    80,
+    52,
+    76
+  ],
+  "median_best_epoch": 76,
+  "search": {
+    "objective": "mean val QWK over folds 1..3",
+    "sampler": "TPE(multivariate)",
+    "pruner": "Hyperband(20,100,3)",
+    "n_trials": 12,
+    "n_complete": 5,
+    "n_pruned": 7,
+    "split_seed": 42,
+    "stratification": "species x class (24 strata)",
+    "n_folds_total": 5,
+    "folds_used": 3
+  },
+  "elapsed_gpu_hours": 9.58,
+  "timestamp": "2026-09-01 02:05:23"
+}

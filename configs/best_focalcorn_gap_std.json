@@ -1,0 +1,45 @@
+{
+  "config_name": "focalcorn_gap_std",
+  "config": {
+    "dual_pool": false,
+    "head": "corn",
+    "loss": "focalcorn_std"
+  },
+  "best_hp": {
+    "lr": 0.00010615360772719643,
+    "weight_decay": 0.013981961408994055,
+    "drop_path": 0.18082901282149316,
+    "gamma": 2.407091140489139,
+    "pct_start": 0.14438679582150427,
+    "batch_size": 96,
+    "aff_degrees": 39,
+    "aff_translate": 0.05751622782386665,
+    "rerase_p": 0.5542075266578652
+  },
+  "best_mean_val_qwk": 0.885725605193597,
+  "fold_qwks": [
+    0.8848754734443007,
+    0.8836288885678513,
+    0.8886724535686394
+  ],
+  "best_epochs": [
+    73,
+    93,
+    52
+  ],
+  "median_best_epoch": 73,
+  "search": {
+    "objective": "mean val QWK over folds 1..3",
+    "sampler": "TPE(multivariate)",
+    "pruner": "Hyperband(20,100,3)",
+    "n_trials": 12,
+    "n_complete": 3,
+    "n_pruned": 9,
+    "split_seed": 42,
+    "stratification": "species x class (24 strata)",
+    "n_folds_total": 5,
+    "folds_used": 3
+  },
+  "elapsed_gpu_hours": 5.91,
+  "timestamp": "2026-09-01 08:00:14"
+}

@@ -1,0 +1,45 @@
+{
+  "config_name": "corn_gap_ours",
+  "config": {
+    "dual_pool": false,
+    "head": "corn",
+    "loss": "corn_ours"
+  },
+  "best_hp": {
+    "lr": 0.00013927974730341364,
+    "weight_decay": 0.010278118224157015,
+    "drop_path": 0.06311476832215226,
+    "gamma": 0.9512420417919866,
+    "pct_start": 0.11516565474952965,
+    "batch_size": 64,
+    "aff_degrees": 40,
+    "aff_translate": 0.01530672161220421,
+    "rerase_p": 0.14621372926638426
+  },
+  "best_mean_val_qwk": 0.8855800035656266,
+  "fold_qwks": [
+    0.8937714068999846,
+    0.8740080754593087,
+    0.8889605283375865
+  ],
+  "best_epochs": [
+    73,
+    70,
+    49
+  ],
+  "median_best_epoch": 70,
+  "search": {
+    "objective": "mean val QWK over folds 1..3",
+    "sampler": "TPE(multivariate)",
+    "pruner": "Hyperband(20,100,3)",
+    "n_trials": 12,
+    "n_complete": 4,
+    "n_pruned": 8,
+    "split_seed": 42,
+    "stratification": "species x class (24 strata)",
+    "n_folds_total": 5,
+    "folds_used": 3
+  },
+  "elapsed_gpu_hours": 8.12,
+  "timestamp": "2026-08-31 16:30:19"
+}

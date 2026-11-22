@@ -1,0 +1,101 @@
+% F2 — The proposed FocalCORN-Swin architecture (Methodology).
+% Drawn at the printed width of the manuscript text block (344 pt = 12.1 cm) with
+% 8 pt sans-serif lettering, so it is included unscaled and no text is shrunk.
+% Upper row: the network and its two conditional outputs. Lower row: how those
+% outputs are used, by the focal CORN loss in training and by decoding at inference.
+% The input thumbnail F2_input.jpg is written by make_architecture_input.py.
+%
+% Build:  pdflatex F2_architecture.tex  ->  F2_architecture.pdf  (copy to paper/figures/)
+
+\documentclass[border=1pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath, amssymb}
+\usetikzlibrary{positioning, arrows.meta, fit, calc}
+
+\definecolor{prop}{HTML}{2a78d6}
+\definecolor{frame}{HTML}{7a7a7a}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize,
+  >={Latex[length=1.5mm]},
+  flow/.style={->, line width=0.6pt},
+  layer/.style={draw=prop, fill=prop!12, line width=0.6pt, align=center,
+                inner sep=1pt, minimum width=0.9cm},
+  fixed/.style={draw=black!55, fill=black!7, line width=0.6pt, align=center,
+                inner sep=1pt},
+  op/.style={draw=black!55, fill=white, line width=0.6pt, align=center,
+             rounded corners=2pt, inner sep=2.5pt, minimum height=0.95cm},
+  unit/.style={circle, draw=prop, fill=white, line width=0.6pt, minimum size=0.5cm,
+               inner sep=0pt},
+  group/.style={draw=frame, dashed, line width=0.5pt, rounded corners=4pt},
+  title/.style={font=\sffamily\footnotesize\bfseries},
+  dim/.style={text=black!75},
+]
+
+% ---------------- upper row: the network ----------------
+\node[inner sep=0pt] (img) at (0.6, 0) {\includegraphics[width=1.2cm]{F2_input.jpg}};
+\node[title] at (0.6, 1.45) {Input};
+\node[dim] at (0.6, -1.1) {$224^2{\times}3$};
+
+\foreach \i/\x/\h/\d in {1/2.05/1.70/56^2{\times}96, 2/3.30/1.45/28^2{\times}192,
+                         3/4.55/1.20/14^2{\times}384, 4/5.80/0.95/7^2{\times}768} {
+  \node[layer, minimum height=\h cm] (s\i) at (\x, 0) {Stage\\\i};
+  \node[dim] at (\x, -1.1) {$\d$};
+}
+\node[group, fit={(1.45,-1.38) (6.40,1.15)}, inner sep=0pt] (swin) {};
+\node[title] at (swin.north |- 0,1.45) {Swin-Tiny backbone};
+
+\node[fixed, minimum width=0.75cm, minimum height=1.2cm] (gap) at (7.08, 0) {GAP};
+\node[dim] at (7.08, -1.1) {$768$};
+
+\node[layer, minimum width=0.95cm, minimum height=1.2cm] (lin) at (8.3, 0) {Linear};
+\node[dim] at (8.3, -0.85) {$2$};
+\node[unit] (f0) at (9.35, 0.5) {$f_0$};
+\node[unit] (f1) at (9.35, -0.5) {$f_1$};
+\node[group, fit={(7.70,-1.15) (9.75,1.15)}, inner sep=0pt] (head) {};
+\node[title] at (head.north |- 0,1.45) {CORN head};
+\node[anchor=west] at (9.8, 0.5) {$P(y{>}0)$};
+\node[anchor=west] at (9.8, -0.5) {$P(y{>}1 \mid y{>}0)$};
+
+\draw[flow] (img) -- (swin.west |- img);
+\draw[flow] (s1) -- (s2);
+\draw[flow] (s2) -- (s3);
+\draw[flow] (s3) -- (s4);
+\draw[flow] (swin.east |- s4) -- (gap);
+\draw[flow] (gap) -- (head.west |- gap);
+\draw[flow] (lin.east) -- (f0);
+\draw[flow] (lin.east) -- (f1);
+
+% ---------------- lower row: training and inference ----------------
+\def\yb{-2.95}
+\node (y) at (0.2, \yb) {$y$};
+\node[op, text width=2.0cm] (tgt) at (1.6, \yb)
+  {$t_k = \mathbf{1}[y > k]$\\$m_k = \mathbf{1}[y \geq k]$};
+\node[op, text width=1.6cm] (foc) at (3.95, \yb)
+  {$(1 - p_k)^{\gamma}\,\ell_k$\\$\gamma = 2.41$};
+\node[op, text width=0.7cm] (loss) at (5.6, \yb) {$\mathcal{L}_{\mathrm{thr}}$};
+\draw[flow] (y) -- (tgt);
+\draw[flow] (tgt) -- (foc);
+\draw[flow] (foc) -- (loss);
+\node[group, fit={(0.0,-3.6) (6.25,-2.3)}, inner sep=0pt] (train) {};
+\node[title, below=2pt of train] {Training: focal CORN loss};
+
+\node[op, text width=2.3cm] (dec) at (7.85, \yb)
+  {$\hat{y} = \mathbf{1}[f_0 > 0.5]$\\$\phantom{\hat{y}} + \mathbf{1}[f_0 f_1 > 0.5]$};
+\node[op, text width=2.0cm, align=left] (grade) at (10.7, \yb)
+  {0\enspace Highly Fresh\\1\enspace Fresh\\2\enspace Not Fresh};
+\draw[flow] (dec) -- (grade);
+\node[group, fit={(6.5,-3.6) (11.9,-2.3)}, inner sep=0pt] (infer) {};
+\node[title, below=2pt of infer] {Inference: cumulative-product decoding};
+
+% the head's outputs feed both rows
+\coordinate (bus) at (head.south |- 0,-1.75);
+\draw[line width=0.6pt] (head.south) -- (bus);
+\draw[flow] (bus) -| (foc.north);
+\draw[flow] (bus) -| (dec.north);
+\fill (bus) circle (1.2pt);
+\node[anchor=south west, inner sep=1.5pt] at (bus) {$f_0, f_1$};
+
+\end{tikzpicture}
+\end{document}
